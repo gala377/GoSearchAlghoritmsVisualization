@@ -41,10 +41,14 @@ func main() {
 
 
 	gl.Viewport(0, 0, window_width, window_height)
-
-
+	gl.ClearColor(0.2, 0.3, 0.3, 1.0)
 
 	for !window.ShouldClose() {
+		processInput(window)
+
+		//rendering goes here
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}
@@ -55,6 +59,7 @@ func main() {
 func framebufferSizeCallback(window *glfw.Window, width, height int) {
 	gl.Viewport(0 ,0, int32(width), int32(height))
 }
+
 
 func processInput(window *glfw.Window) {
 	if window.GetKey(glfw.KeyEscape) == glfw.Press {
