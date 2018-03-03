@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"runtime"
+	"unsafe"
 
 	"github.com/go-gl/gl/v4.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -65,4 +66,27 @@ func processInput(window *glfw.Window) {
 	if window.GetKey(glfw.KeyEscape) == glfw.Press {
 		window.SetShouldClose(true)
 	}
+}
+
+type Triangle struct {
+	VBO uint32
+	vertices []float32
+
+}
+
+func NewTriangle() *Triangle {
+	t := Triangle{
+		vertices: []float32{
+			-0.5, -0.5, 0.0,
+			0.5, -0.5, 0.0,
+			0.0,  0.5, 0.0,
+		},
+	}
+	gl.GenBuffers(1, &t.VBO)
+	gl.BindBuffer(gl.ARRAY_BUFFER, t.VBO)
+	gl.BufferData(
+		gl.ARRAY_BUFFER,
+		4*len(t.vertices),
+		gl.Ptr(t.vertices),
+		gl.STATIC_DRAW)
 }
