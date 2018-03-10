@@ -1,8 +1,6 @@
 package objects
 
 import (
-	"image"
-
 	"github.com/gala377/SearchAlghorithms/graphics"
 )
 import "github.com/go-gl/gl/v4.3-core/gl"
