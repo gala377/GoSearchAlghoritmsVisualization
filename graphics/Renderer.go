@@ -1,6 +1,7 @@
 package graphics
 
 import (
+	"fmt"
 	"log"
 	"runtime"
 )
@@ -44,7 +45,7 @@ func initGLFW() error {
 	log.Println("Setting Window hints...")
 	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
-	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 	log.Println("Window hints set.")
@@ -60,6 +61,40 @@ func (r *Renderer) Terminate() {
 	glfw.Terminate()
 }
 
+//I think creating a window should connect an appropriate callback
+//So this function will be trashed in later refactoring
+func (r *Renderer) ConnectCallbacks() {
+	r.window.SetFramebufferSizeCallback(r.frameBufferSizeCallback())
+}
+
+func (r *Renderer) Draw() {
+	r.processInput()
+
+	r.render()
+
+	r.window.SwapBuffers()
+	glfw.PollEvents()
+}
+
+func (r *Renderer) processInput() {
+	if r.window.GetKey(glfw.KeyEscape) == glfw.Press {
+		r.window.SetShouldClose(true)
+	}
+}
+
+func (r* Renderer) render() {
+	gl.ClearColor(0.2, 0.3, 0.3, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+}
+
+func (r *Renderer) frameBufferSizeCallback() glfw.FramebufferSizeCallback {
+	return func (window *glfw.Window, width, height int) {
+		r.SetWindowTitle(fmt.Sprintf("(%v, %v)", width, height))
+		gl.Viewport(0, 0, int32(width), int32(height))
+	}
+}
+
+
 //
 //	Window interface
 //
@@ -72,6 +107,9 @@ func (w *Window) SetWindowSize(width, height uint32) {
 
 func (w *Window) SetWindowTitle(title string) {
 	w.title = title
+	if w.window != nil {
+		w.window.SetTitle(w.title)
+	}
 	log.Printf("Window Title set (%v)", title)
 }
 
@@ -115,4 +153,3 @@ func initGL(width, height uint32) error {
 	log.Println("Set.")
 	return nil
 }
-

@@ -1,7 +1,10 @@
 package graphics
 
 
-type Shader struct {}
+type Shader struct {
+	frag uint32
+	vert uint32
+}
 
 func NewShader(frag, vert string) *Shader {
 	panic("Implement me!")
