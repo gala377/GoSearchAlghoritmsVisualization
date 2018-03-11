@@ -92,7 +92,7 @@ func (r *Renderer) processInput() {
 
 func (r* Renderer) render() {
 	gl.ClearColor(0.2, 0.3, 0.3, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 	for _, obj := range r.objects {
 		obj.Draw()

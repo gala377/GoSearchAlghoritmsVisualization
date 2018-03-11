@@ -1,8 +1,6 @@
 package objects
 
 import (
-	"log"
-
 	"github.com/gala377/SearchAlghorithms/graphics/MetaObjects"
 )
 import "github.com/go-gl/gl/v4.3-core/gl"
@@ -70,12 +68,18 @@ func (r *RawObject) bindBuffers() {
 		gl.Ptr(r.vertices),
 		gl.STATIC_DRAW)
 
+
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, r.EBO)
 	gl.BufferData(
 		gl.ELEMENT_ARRAY_BUFFER,
 		len(r.indices)*INT_SIZE,
 		gl.Ptr(r.indices),
 		gl.STATIC_DRAW)
+
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*FLOAT_SIZE, nil)
+	gl.EnableVertexAttribArray(0)
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*FLOAT_SIZE, gl.Ptr(r.vertices[3:]))
+	gl.EnableVertexAttribArray(1)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
@@ -91,7 +95,6 @@ func (r *RawObject) CompileShaders(frag, vert string) (err error) {
 }
 
 func (r *RawObject) Draw() {
-	log.Println("Drawing...")
 	r.shader.Use()
 
 	//r.setUniforms()
@@ -145,3 +148,37 @@ func (r *RawObject) GetScale() (x, y, z float32) {
 //
 // func CompileShaders() not sure if its proper way to do ?
 //
+
+
+type RawObject2D struct {
+	VBO uint32
+	VAO uint32
+
+	shader *MetaObjects.Shader
+
+	vertices []float32
+}
+
+
+func NewRawObject2D(verts []float32) *RawObject2D {
+	r := emptyRawObject2D()
+	copy(r.vertices, verts)
+	r.bindBuffers()
+	return r
+}
+
+func emptyRawObject2D() *RawObject2D {
+	r := &RawObject2D{
+		vertices: make([]float32, 0),
+	}
+	gl.GenBuffers(1, &r.VBO)
+	gl.GenVertexArrays(1, &r.VAO)
+	return r
+}
+
+func (r *RawObject2D) bindBuffers() {
+	gl.BindVertexArray(r.VAO)
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, r.VBO)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+}
