@@ -10,11 +10,16 @@ import (
 import "github.com/go-gl/glfw/v3.2/glfw"
 import "github.com/go-gl/gl/v4.3-core/gl"
 
+
+
 type Renderer struct {
 	*Window
 	objects []objects.Drawable
 
 	polygonMode bool
+	//TODO Change it later so there is a higher order struct
+	//TODO Composing Renderer and inputManager, handling input
+	input *InputManager
 }
 
 type Window struct {
@@ -38,11 +43,14 @@ func New() (*Renderer, error) {
 		return nil, err
 	}
 	log.Println("Creating empty renderer...")
-	return &Renderer{
+	r := &Renderer{
 		&Window{},
 		make([]objects.Drawable, 0),
 		false,
-	}, nil
+		nil,
+	}
+	r.input = NewInputManager(r)
+	return r, nil
 }
 
 func initGLFW() error {
@@ -88,10 +96,12 @@ func (r *Renderer) Draw() {
 }
 
 func (r *Renderer) processInput() {
-	if r.window.GetKey(glfw.KeyEscape) == glfw.Press {
+	if r.input.GetKey(Key(glfw.KeyEscape)) == PRESSED {
+		log.Println("ESCAPE pressed")
 		r.window.SetShouldClose(true)
 	}
-	if r.window.GetKey(glfw.KeyW) == glfw.Press {
+	if r.input.GetKey(Key(glfw.KeyW)) == CLICKED {
+		log.Println("W Clicked")
 		if r.polygonMode {
 			gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 		} else {
@@ -142,7 +152,6 @@ func (w *Window) SetWindow(width, height uint32, title string) {
 }
 
 func (w *Window) GetWindow() (*glfw.Window, error) {
-	log.Println("Returning window")
 	if w.window != nil {
 		return w.window, nil
 	}
