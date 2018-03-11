@@ -1,7 +1,9 @@
 package objects
 
 import (
-	"github.com/gala377/SearchAlghorithms/graphics"
+	"log"
+
+	"github.com/gala377/SearchAlghorithms/graphics/MetaObjects"
 )
 import "github.com/go-gl/gl/v4.3-core/gl"
 import glm "github.com/go-gl/mathgl/mgl32"
@@ -19,12 +21,12 @@ type RawObject struct {
 	rotation glm.Vec3
 	scale    glm.Vec3
 
-	shader *graphics.Shader
+	shader *MetaObjects.Shader
 
 	vertices []float32
 	indices  []uint32
 
-	camera *graphics.Camera
+	camera *MetaObjects.Camera
 }
 
 
@@ -83,10 +85,16 @@ func (r *RawObject) bindBuffers() {
 // RawObject interface
 //
 
+func (r *RawObject) CompileShaders(frag, vert string) (err error) {
+	r.shader, err = MetaObjects.NewShader(frag, vert)
+	return err
+}
+
 func (r *RawObject) Draw() {
+	log.Println("Drawing...")
 	r.shader.Use()
 
-	r.setUniforms()
+	//r.setUniforms()
 
 	gl.BindVertexArray(r.VAO)
 	// TODO check if gl.Ptr(r.indices) should be instead of nil
@@ -95,15 +103,15 @@ func (r *RawObject) Draw() {
 }
 
 func (r *RawObject) setUniforms() {
-	transformLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("transform"))
-	modelLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("model"))
-	viewLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("view"))
-	projectionLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("projection"))
+	transformLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("transform\x00"))
+	//modelLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("model\x00"))
+	//viewLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("view\x00"))
+	//projectionLoc := gl.GetUniformLocation(r.shader.GetProgramId(), gl.Str("projection\x00"))
 
 	gl.UniformMatrix4fv(transformLoc, 1, false, &r.trans[0])
-	gl.UniformMatrix4fv(modelLoc, 1, false, &r.camera.GetModel()[0])
-	gl.UniformMatrix4fv(viewLoc, 1, false, &r.camera.GetView()[0])
-	gl.UniformMatrix4fv(projectionLoc, 1, false, &r.camera.GetProjection()[0])
+	//gl.UniformMatrix4fv(modelLoc, 1, false, &r.camera.GetModel()[0])
+	//gl.UniformMatrix4fv(viewLoc, 1, false, &r.camera.GetView()[0])
+	//gl.UniformMatrix4fv(projectionLoc, 1, false, &r.camera.GetProjection()[0])
 }
 
 func (r *RawObject) Translate(x, y, z float32) {

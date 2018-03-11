@@ -1,4 +1,4 @@
-package graphics
+package MetaObjects
 
 type Camera struct {
 

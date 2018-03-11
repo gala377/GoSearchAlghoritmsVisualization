@@ -4,12 +4,15 @@ import (
 	"fmt"
 	"log"
 	"runtime"
+
+	"github.com/gala377/SearchAlghorithms/graphics/objects"
 )
 import "github.com/go-gl/glfw/v3.2/glfw"
 import "github.com/go-gl/gl/v4.3-core/gl"
 
 type Renderer struct {
 	*Window
+	objects []objects.Drawable
 }
 
 type Window struct {
@@ -35,6 +38,7 @@ func New() (*Renderer, error) {
 	log.Println("Creating empty renderer...")
 	return &Renderer{
 		&Window{},
+		make([]objects.Drawable, 0),
 	}, nil
 }
 
@@ -55,6 +59,10 @@ func initGLFW() error {
 //
 // Renderer Interface
 //
+
+func (r *Renderer) AddObject(obj objects.Drawable) {
+	r.objects = append(r.objects, obj)
+}
 
 func (r *Renderer) Terminate() {
 	log.Println("Terminating GLFW")
@@ -85,6 +93,10 @@ func (r *Renderer) processInput() {
 func (r* Renderer) render() {
 	gl.ClearColor(0.2, 0.3, 0.3, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
+
+	for _, obj := range r.objects {
+		obj.Draw()
+	}
 }
 
 func (r *Renderer) frameBufferSizeCallback() glfw.FramebufferSizeCallback {
@@ -153,3 +165,5 @@ func initGL(width, height uint32) error {
 	log.Println("Set.")
 	return nil
 }
+
+
