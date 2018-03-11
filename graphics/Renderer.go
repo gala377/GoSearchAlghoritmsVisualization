@@ -13,6 +13,8 @@ import "github.com/go-gl/gl/v4.3-core/gl"
 type Renderer struct {
 	*Window
 	objects []objects.Drawable
+
+	polygonMode bool
 }
 
 type Window struct {
@@ -39,6 +41,7 @@ func New() (*Renderer, error) {
 	return &Renderer{
 		&Window{},
 		make([]objects.Drawable, 0),
+		false,
 	}, nil
 }
 
@@ -87,6 +90,14 @@ func (r *Renderer) Draw() {
 func (r *Renderer) processInput() {
 	if r.window.GetKey(glfw.KeyEscape) == glfw.Press {
 		r.window.SetShouldClose(true)
+	}
+	if r.window.GetKey(glfw.KeyW) == glfw.Press {
+		if r.polygonMode {
+			gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+		} else {
+			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+		}
+		r.polygonMode = !r.polygonMode
 	}
 }
 

@@ -148,37 +148,3 @@ func (r *RawObject) GetScale() (x, y, z float32) {
 //
 // func CompileShaders() not sure if its proper way to do ?
 //
-
-
-type RawObject2D struct {
-	VBO uint32
-	VAO uint32
-
-	shader *MetaObjects.Shader
-
-	vertices []float32
-}
-
-
-func NewRawObject2D(verts []float32) *RawObject2D {
-	r := emptyRawObject2D()
-	copy(r.vertices, verts)
-	r.bindBuffers()
-	return r
-}
-
-func emptyRawObject2D() *RawObject2D {
-	r := &RawObject2D{
-		vertices: make([]float32, 0),
-	}
-	gl.GenBuffers(1, &r.VBO)
-	gl.GenVertexArrays(1, &r.VAO)
-	return r
-}
-
-func (r *RawObject2D) bindBuffers() {
-	gl.BindVertexArray(r.VAO)
-	gl.EnableVertexAttribArray(0)
-	gl.BindBuffer(gl.ARRAY_BUFFER, r.VBO)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
-}

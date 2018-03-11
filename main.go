@@ -16,8 +16,8 @@ func main() {
 	win, err := renderer.GetWindow()
 	renderer.ConnectCallbacks()
 
-	renderer.AddObject(objects.NewTriangle2D())
-	//renderer.AddObject(objects.NewSquare2D(1.0))
+	//renderer.AddObject(objects.NewTriangle2D())
+	renderer.AddObject(objects.NewSquare2D(0.5))
 
 	if err != nil {
 		panic(err)
