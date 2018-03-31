@@ -2,7 +2,9 @@
 
 out vec4 frag_colour;
 
+uniform vec4 color;
+
 void main()
 {
-    frag_colour = vec4(1, 0, 0, 1);
+    frag_colour = color;
 }

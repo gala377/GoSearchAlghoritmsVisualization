@@ -9,7 +9,9 @@ import (
 	"strings"
 
 	"github.com/go-gl/gl/v4.3-core/gl"
+	glm "github.com/go-gl/mathgl/mgl32"
 )
+
 
 type Shader struct {
 	frag uint32
@@ -24,13 +26,13 @@ func NewShader(frag, vert string) (*Shader, error) {
 	sh := &Shader{}
 	var err error
 	log.Println("Compiling fragment shader...")
-	if sh.frag, err = compileShader("simple.frag", gl.FRAGMENT_SHADER); err != nil {
+	if sh.frag, err = compileShader(frag, gl.FRAGMENT_SHADER); err != nil {
 		log.Printf("Error (%v)", err)
 		return sh, err
 	}
 	log.Println("Compiled.")
 	log.Println("Compiling vertex shader...")
-	if sh.vert, err = compileShader("simple.vert", gl.VERTEX_SHADER); err != nil {
+	if sh.vert, err = compileShader(vert, gl.VERTEX_SHADER); err != nil {
 		log.Printf("Error (%v)", err)
 		return sh, err
 	}
@@ -111,6 +113,10 @@ func (sh* Shader) delete() {
 	gl.DeleteShader(sh.vert)
 }
 
+//
+// Public Interface
+//
+
 func (sh *Shader) Use() {
 	gl.UseProgram(sh.program)
 }
@@ -119,4 +125,29 @@ func (sh *Shader) GetProgramId () uint32  {
 	return sh.program
 }
 
+func (sh *Shader) setBool(name string, value bool) {
+	var boolValue int32
+	if value {
+		boolValue = 1
+	} else {
+		boolValue = 0
+	}
+	gl.Uniform1i(gl.GetUniformLocation(sh.program, gl.Str(name)), boolValue)
+}
 
+func (sh *Shader) setInt(name string, value int) {
+	gl.Uniform1i(gl.GetUniformLocation(sh.program, gl.Str(name)), int32(value))
+}
+
+func (sh *Shader) setFloat(name string, value float32) {
+	gl.Uniform1f(gl.GetUniformLocation(sh.program, gl.Str(name)), value)
+}
+
+func (sh *Shader) set4f(name string, v0, v1, v2, v3 float32) {
+	gl.Uniform4f(gl.GetUniformLocation(sh.program, gl.Str(name)), v0, v1, v2, v3)
+}
+
+func (sh *Shader) setV4f(name string, vec glm.Vec4) {
+	v0, v1, v2, v3 := vec.Elem()
+	sh.set4f(name, v0, v1, v2, v3)
+}
