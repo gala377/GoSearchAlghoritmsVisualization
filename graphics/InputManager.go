@@ -1,6 +1,9 @@
 package graphics
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -31,8 +34,7 @@ func (im *InputManager) GetKey(key Key) KeyState {
 	previous := im.getKeyState(key)
 	isPressed, err := im.isGLFWKeyPressed(key)
 	if err != nil {
-		// TODO change it to logging in later realease
-		panic(err)
+		log.Println(fmt.Sprintf("Error while trying to get key state of: %d", key))
 	}
 	im.progressState(key, previous, isPressed)
 	return im.buttons[key]

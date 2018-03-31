@@ -11,6 +11,7 @@ import "github.com/go-gl/glfw/v3.2/glfw"
 import "github.com/go-gl/gl/v4.3-core/gl"
 
 
+const WindowScalingFactor = 10.0
 
 type Renderer struct {
 	*Window
@@ -73,6 +74,17 @@ func initGLFW() error {
 
 func (r *Renderer) AddObject(obj objects.Drawable) {
 	r.objects = append(r.objects, obj)
+	r.adjustObjectVertices(obj)
+}
+
+func (r* Renderer) adjustObjectVertices(obj objects.Drawable) {
+	if casted, ok := obj.(objects.Transformable); ok {
+		log.Println("Got transformable object... Scaling with window size...")
+		casted.Scale(
+			WindowScalingFactor/float32(r.width),
+			WindowScalingFactor/float32(r.height),
+			1.0 )
+	}
 }
 
 func (r *Renderer) Terminate() {
@@ -122,11 +134,25 @@ func (r* Renderer) render() {
 
 func (r *Renderer) frameBufferSizeCallback() glfw.FramebufferSizeCallback {
 	return func (window *glfw.Window, width, height int) {
+		log.Printf("Window size is (%d, %d) new width and height are (%d, %d)", r.width, r.height, width, height)
+		for _, obj := range r.objects {
+			r.rescaleObjectsVertices(obj, width, height)
+		}
+		r.width, r.height = uint32(width), uint32(height)
 		r.SetWindowTitle(fmt.Sprintf("(%v, %v)", width, height))
 		gl.Viewport(0, 0, int32(width), int32(height))
 	}
 }
 
+func (r *Renderer) rescaleObjectsVertices(obj objects.Drawable, width, height int) {
+	if casted, ok := obj.(objects.Transformable); ok {
+		log.Println("Got transformable object... Scaling with window size...")
+		casted.Scale(
+			float32(r.width)/float32(width),
+			float32(r.height)/float32(height),
+			1.0 )
+	}
+}
 
 //
 //	Window interface

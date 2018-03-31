@@ -1,6 +1,8 @@
 package objects
 
 import (
+	"log"
+
 	"github.com/gala377/SearchAlghorithms/graphics/MetaObjects"
 )
 import "github.com/go-gl/gl/v4.3-core/gl"
@@ -34,7 +36,9 @@ type RawObject struct {
 
 func NewRawObject(verts, normals []float32, indics []uint32) *RawObject {
 	r := emptyRawObject()
-	r.indices = indics
+	r.indices = make([]uint32, len(indics))
+	copy(r.indices, indics)
+	log.Printf("Idicies copied: %v", r.indices)
 	for i := 0; i < (len(verts) / 3); i++ {
 		curr := i * 3
 		r.vertices = append(r.vertices, verts[curr:curr+3]...)
@@ -47,6 +51,7 @@ func NewRawObject(verts, normals []float32, indics []uint32) *RawObject {
 func emptyRawObject() *RawObject {
 	r := &RawObject{
 		vertices: make([]float32, 0),
+		indices: make([]uint32, 0),
 		trans:    glm.Ident4(),
 		position: glm.Vec3{0.0, 0.0, 0.0},
 		rotation: glm.Vec3{0.0, 0.0, 0.0},
@@ -97,10 +102,10 @@ func (r *RawObject) CompileShaders(frag, vert string) (err error) {
 func (r *RawObject) Draw() {
 	r.shader.Use()
 
-	//r.setUniforms()
+	r.setUniforms()
 
 	gl.BindVertexArray(r.VAO)
-	// TODO check if gl.Ptr(r.indices) should be instead of nil
+
 	gl.DrawElements(gl.TRIANGLES, int32(len(r.indices)), gl.UNSIGNED_INT, nil)
 	gl.BindVertexArray(0)
 }
@@ -143,8 +148,3 @@ func (r *RawObject) GetRotation() (x, y, z float32) {
 func (r *RawObject) GetScale() (x, y, z float32) {
 	return r.scale.Elem()
 }
-
-// TODO
-//
-// func CompileShaders() not sure if its proper way to do ?
-//
