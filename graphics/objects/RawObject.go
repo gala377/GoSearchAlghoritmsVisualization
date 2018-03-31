@@ -2,6 +2,8 @@ package objects
 
 import (
 	"log"
+
+	//"log"
 	"github.com/gala377/SearchAlghorithms/graphics/MetaObjects"
 	"github.com/go-gl/gl/v4.3-core/gl"
 )
@@ -91,6 +93,8 @@ func (r *RawObject) bindBuffers() {
 // RawObject interface
 //
 
+
+// TODO change to SetShader
 func (r *RawObject) CompileShaders(frag, vert string) (err error) {
 	r.shader, err = MetaObjects.NewShader(frag, vert)
 	return err

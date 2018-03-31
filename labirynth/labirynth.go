@@ -1,8 +1,6 @@
 package labyrinth
 
-import (
-	"log"
-)
+import "log"
 
 type Labyrinth struct {
 	size_x uint

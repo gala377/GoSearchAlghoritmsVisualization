@@ -10,6 +10,10 @@ import (
 import "github.com/go-gl/glfw/v3.2/glfw"
 import "github.com/go-gl/gl/v4.3-core/gl"
 
+// TODO shared materials
+// TODO Compound Drawable
+// TODO Better performance
+
 
 const WindowScalingFactor = 10.0
 

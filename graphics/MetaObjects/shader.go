@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+
+	//"log"
 	"path/filepath"
 	"strings"
 
@@ -13,6 +15,8 @@ import (
 )
 
 
+// TODO caching shader uniform locations
+// TODO chaching compiled shaders - ShaderManager
 type Shader struct {
 	frag uint32
 	vert uint32
