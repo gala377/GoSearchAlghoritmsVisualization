@@ -2,10 +2,9 @@ package objects
 
 import (
 	"log"
-
 	"github.com/gala377/SearchAlghorithms/graphics/MetaObjects"
+	"github.com/go-gl/gl/v4.3-core/gl"
 )
-import "github.com/go-gl/gl/v4.3-core/gl"
 import glm "github.com/go-gl/mathgl/mgl32"
 
 const FLOAT_SIZE = 4
@@ -29,7 +28,6 @@ type RawObject struct {
 	camera *MetaObjects.Camera
 }
 
-
 //
 // Creation
 //
@@ -51,11 +49,11 @@ func NewRawObject(verts, normals []float32, indics []uint32) *RawObject {
 func emptyRawObject() *RawObject {
 	r := &RawObject{
 		vertices: make([]float32, 0),
-		indices: make([]uint32, 0),
+		indices:  make([]uint32, 0),
 		trans:    glm.Ident4(),
 		position: glm.Vec3{0.0, 0.0, 0.0},
 		rotation: glm.Vec3{0.0, 0.0, 0.0},
-		scale: glm.Vec3{1.0, 1.0, 1.0},
+		scale:    glm.Vec3{1.0, 1.0, 1.0},
 	}
 	gl.GenBuffers(1, &r.VBO)
 	gl.GenBuffers(1, &r.EBO)
@@ -72,7 +70,6 @@ func (r *RawObject) bindBuffers() {
 		len(r.vertices)*FLOAT_SIZE,
 		gl.Ptr(r.vertices),
 		gl.STATIC_DRAW)
-
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, r.EBO)
 	gl.BufferData(
@@ -142,7 +139,7 @@ func (r *RawObject) Rotate(arc, x, y, z float32) {
 
 func (r *RawObject) Scale(x, y, z float32) {
 	r.trans = r.trans.Mul4(glm.Scale3D(x, y, z))
-	r.scale = glm.Vec3{r.scale.X()*x, r.scale.Y()*y, r.scale.Z()*z}
+	r.scale = glm.Vec3{r.scale.X() * x, r.scale.Y() * y, r.scale.Z() * z}
 }
 
 func (r *RawObject) GetPosition() (x, y, z float32) {

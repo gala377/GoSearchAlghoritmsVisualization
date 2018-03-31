@@ -1,5 +1,9 @@
 package labyrinth
 
+import (
+	"log"
+)
+
 type Labyrinth struct {
 	size_x uint
 	size_y uint
@@ -15,5 +19,18 @@ func (l Labyrinth) Dimensions() (x, y uint) {
 }
 
 func Random(size_x, size_y uint) Labyrinth {
-	return Labyrinth{}
+	board := make([][]bool, size_x)
+	for i := 0; uint(i) < size_x; i++ {
+		board[i] = make([]bool, size_y)
+	}
+	log.Println("Making Random labyrnthm")
+	var temp string
+	for _, column := range board {
+		for _ = range column {
+			temp += "|x|"
+		}
+		temp += "\n"
+	}
+	log.Println(temp)
+	return Labyrinth{size_x: size_x, size_y: size_y, board: board}
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gala377/SearchAlghorithms/graphics"
-	"github.com/gala377/SearchAlghorithms/graphics/objects"
+	"github.com/gala377/SearchAlghorithms/labirynth"
 )
 
 func main() {
@@ -16,8 +16,10 @@ func main() {
 	win, err := renderer.GetWindow()
 	renderer.ConnectCallbacks()
 
-	//renderer.AddObject(objects.NewTriangle2D())
-	renderer.AddObject(objects.NewSquare2D(0.5))
+	lab := labyrinth.Random(100, 100)
+	board := labyrinth.NewBoard(lab)
+	board.Translate(-3.0, -2.9, 0.0)
+	renderer.AddObject(&board)
 
 	if err != nil {
 		panic(err)
@@ -26,4 +28,3 @@ func main() {
 		renderer.Draw()
 	}
 }
-

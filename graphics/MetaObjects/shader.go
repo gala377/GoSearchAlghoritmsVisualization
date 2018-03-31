@@ -146,6 +146,7 @@ func (sh *Shader) SetFloat(name string, value float32) {
 }
 
 func (sh *Shader) Set4f(name string, v0, v1, v2, v3 float32) {
+	name += "\x00"
 	gl.Uniform4f(gl.GetUniformLocation(sh.program, gl.Str(name)), v0, v1, v2, v3)
 }
 
