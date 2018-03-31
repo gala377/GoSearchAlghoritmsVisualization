@@ -18,6 +18,8 @@ type Shader struct {
 	vert uint32
 
 	program uint32
+
+	cachedUniformLocations map[string]uint32
 }
 
 
@@ -125,7 +127,7 @@ func (sh *Shader) GetProgramId () uint32  {
 	return sh.program
 }
 
-func (sh *Shader) setBool(name string, value bool) {
+func (sh *Shader) SetBool(name string, value bool) {
 	var boolValue int32
 	if value {
 		boolValue = 1
@@ -135,19 +137,19 @@ func (sh *Shader) setBool(name string, value bool) {
 	gl.Uniform1i(gl.GetUniformLocation(sh.program, gl.Str(name)), boolValue)
 }
 
-func (sh *Shader) setInt(name string, value int) {
+func (sh *Shader) SetInt(name string, value int) {
 	gl.Uniform1i(gl.GetUniformLocation(sh.program, gl.Str(name)), int32(value))
 }
 
-func (sh *Shader) setFloat(name string, value float32) {
+func (sh *Shader) SetFloat(name string, value float32) {
 	gl.Uniform1f(gl.GetUniformLocation(sh.program, gl.Str(name)), value)
 }
 
-func (sh *Shader) set4f(name string, v0, v1, v2, v3 float32) {
+func (sh *Shader) Set4f(name string, v0, v1, v2, v3 float32) {
 	gl.Uniform4f(gl.GetUniformLocation(sh.program, gl.Str(name)), v0, v1, v2, v3)
 }
 
-func (sh *Shader) setV4f(name string, vec glm.Vec4) {
+func (sh *Shader) SetV4f(name string, vec glm.Vec4) {
 	v0, v1, v2, v3 := vec.Elem()
-	sh.set4f(name, v0, v1, v2, v3)
+	sh.Set4f(name, v0, v1, v2, v3)
 }

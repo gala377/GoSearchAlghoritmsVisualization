@@ -99,6 +99,10 @@ func (r *RawObject) CompileShaders(frag, vert string) (err error) {
 	return err
 }
 
+//
+// Drawable impl
+//
+
 func (r *RawObject) Draw() {
 	r.shader.Use()
 
@@ -121,6 +125,10 @@ func (r *RawObject) setUniforms() {
 	//gl.UniformMatrix4fv(viewLoc, 1, false, &r.camera.GetView()[0])
 	//gl.UniformMatrix4fv(projectionLoc, 1, false, &r.camera.GetProjection()[0])
 }
+
+//
+// Transformable impl
+//
 
 func (r *RawObject) Translate(x, y, z float32) {
 	r.trans = r.trans.Add(glm.Translate3D(x, y, z))
