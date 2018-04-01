@@ -1,6 +1,8 @@
 package objects
 
-import glm "github.com/go-gl/mathgl/mgl32"
+import (
+	glm "github.com/go-gl/mathgl/mgl32"
+)
 
 type Rectangular struct {
 	*ExtendedRawObject
@@ -22,6 +24,6 @@ func NewSquare2D(size float32, color glm.Vec4) *Rectangular {
 	e.setShaderUniforms = func (r *RawObject) {
 		r.shader.SetV4f("color", rect.Color)
 	}
-	e.CompileShaders("color/default.frag", "color/default.vert")
+	e.SetShader("color/default")
 	return rect
 }

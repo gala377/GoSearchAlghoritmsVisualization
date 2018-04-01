@@ -94,7 +94,12 @@ func (r *RawObject) bindBuffers() {
 //
 
 
-// TODO change to SetShader
+func (r *RawObject) SetShader(path string) (err error) {
+	r.shader, err = MetaObjects.GetShader(path)
+	return err
+}
+
+// TODO change to SetShade
 func (r *RawObject) CompileShaders(frag, vert string) (err error) {
 	r.shader, err = MetaObjects.NewShader(frag, vert)
 	return err

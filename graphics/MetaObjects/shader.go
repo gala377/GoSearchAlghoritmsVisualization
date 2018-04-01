@@ -14,7 +14,6 @@ import (
 	glm "github.com/go-gl/mathgl/mgl32"
 )
 
-
 // TODO caching shader uniform locations
 // TODO chaching compiled shaders - ShaderManager
 type Shader struct {
@@ -23,9 +22,24 @@ type Shader struct {
 
 	program uint32
 
-	cachedUniformLocations map[string]uint32
+	cachedUniformLocations map[string]int32
 }
 
+// Move to shader manager in later release
+var shaders = make(map[string]*Shader)
+
+// Use this instead of NewShader for material caching
+func GetShader(path string) (*Shader, error) {
+	sh, ok := shaders[path]
+	if !ok {
+		sh, err := NewShader(path+".frag", path+".vert")
+		if err != nil {
+			return nil, err
+		}
+		shaders[path] = sh
+	}
+	return sh, nil
+}
 
 func NewShader(frag, vert string) (*Shader, error) {
 	log.Println("Creating empty shader")
@@ -68,7 +82,7 @@ func compileShader(file string, shaderType uint32) (uint32, error) {
 	gl.CompileShader(sh)
 
 	var success int32
-	if gl.GetShaderiv(sh, gl.COMPILE_STATUS, &success) ;success == gl.FALSE {
+	if gl.GetShaderiv(sh, gl.COMPILE_STATUS, &success); success == gl.FALSE {
 		var logLength int32
 		gl.GetShaderiv(sh, gl.INFO_LOG_LENGTH, &logLength)
 
@@ -114,7 +128,7 @@ func (sh *Shader) checkForLinkingAndCompileErrors() error {
 	return nil
 }
 
-func (sh* Shader) delete() {
+func (sh *Shader) delete() {
 	gl.DeleteShader(sh.frag)
 	gl.DeleteShader(sh.vert)
 }
@@ -127,7 +141,7 @@ func (sh *Shader) Use() {
 	gl.UseProgram(sh.program)
 }
 
-func (sh *Shader) GetProgramId () uint32  {
+func (sh *Shader) GetProgramId() uint32 {
 	return sh.program
 }
 
@@ -138,11 +152,11 @@ func (sh *Shader) SetBool(name string, value bool) {
 	} else {
 		boolValue = 0
 	}
-	gl.Uniform1i(gl.GetUniformLocation(sh.program, gl.Str(name)), boolValue)
+	gl.Uniform1i(sh.getUniformLocation(name), boolValue)
 }
 
 func (sh *Shader) SetInt(name string, value int) {
-	gl.Uniform1i(gl.GetUniformLocation(sh.program, gl.Str(name)), int32(value))
+	gl.Uniform1i(sh.getUniformLocation(name), int32(value))
 }
 
 func (sh *Shader) SetFloat(name string, value float32) {
@@ -150,11 +164,20 @@ func (sh *Shader) SetFloat(name string, value float32) {
 }
 
 func (sh *Shader) Set4f(name string, v0, v1, v2, v3 float32) {
-	name += "\x00"
-	gl.Uniform4f(gl.GetUniformLocation(sh.program, gl.Str(name)), v0, v1, v2, v3)
+	gl.Uniform4f(sh.getUniformLocation(name), v0, v1, v2, v3)
 }
 
 func (sh *Shader) SetV4f(name string, vec glm.Vec4) {
 	v0, v1, v2, v3 := vec.Elem()
 	sh.Set4f(name, v0, v1, v2, v3)
+}
+
+func (sh *Shader) getUniformLocation(name string) int32 {
+	loc, ok := sh.cachedUniformLocations[name]
+	if !ok {
+		name += "\x00"
+		sh.cachedUniformLocations[name] = gl.GetUniformLocation(sh.program, gl.Str(name))
+		loc = sh.cachedUniformLocations[name]
+	}
+	return loc
 }

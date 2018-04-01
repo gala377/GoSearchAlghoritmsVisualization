@@ -16,7 +16,7 @@ func main() {
 	win, err := renderer.GetWindow()
 	renderer.ConnectCallbacks()
 
-	lab := labyrinth.Random(100, 100)
+	lab := labyrinth.Random(2, 2)
 	board := labyrinth.NewBoard(lab)
 	board.Translate(-3.0, -2.9, 0.0)
 	renderer.AddObject(&board)
