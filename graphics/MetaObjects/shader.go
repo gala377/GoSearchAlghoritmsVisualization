@@ -32,7 +32,8 @@ var shaders = make(map[string]*Shader)
 func GetShader(path string) (*Shader, error) {
 	sh, ok := shaders[path]
 	if !ok {
-		sh, err := NewShader(path+".frag", path+".vert")
+		var err error
+		sh, err = NewShader(path+".frag", path+".vert")
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +44,7 @@ func GetShader(path string) (*Shader, error) {
 
 func NewShader(frag, vert string) (*Shader, error) {
 	log.Println("Creating empty shader")
-	sh := &Shader{}
+	sh := &Shader{cachedUniformLocations: make(map[string]int32)}
 	var err error
 	log.Println("Compiling fragment shader...")
 	if sh.frag, err = compileShader(frag, gl.FRAGMENT_SHADER); err != nil {
