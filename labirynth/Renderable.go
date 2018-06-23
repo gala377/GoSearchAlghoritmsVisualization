@@ -6,7 +6,7 @@ import (
 import glm "github.com/go-gl/mathgl/mgl32"
 
 type Board struct {
-	labyrinth Labyrinth
+	*Labyrinth
 
 	squares []*objects.Rectangular
 
@@ -28,14 +28,14 @@ func DefaultSettings() Settings {
 	}
 }
 
-func NewBoard(l Labyrinth, settings Settings) *Board {
+func NewBoard(l *Labyrinth, settings Settings) *Board {
 	b := &Board{
-		labyrinth: l,
+		Labyrinth: l,
 		squares: make([]*objects.Rectangular, 0),
 		xPos: 0,
 		yPos: 0,
 	}
-	b.labyrinth.ForEach(func(x, y uint, board *[][]bool) {
+	b.Labyrinth.ForEach(func(x, y uint, board *[][]bool) {
 		cValue := settings.PathColor
 		if (*board)[x][y] {
 			cValue = settings.WallColor
@@ -108,7 +108,7 @@ func (b *Board) SetScale(x, y, z float32) {
 }
 
 func (b *Board) matCordsToLinear(x, y uint) uint {
-	return x + y*b.labyrinth.size_y
+	return x + y*b.Labyrinth.size_y
 }
 
 

@@ -24,6 +24,7 @@ type Renderer struct {
 	//TODO Change it later so there is a higher order struct
 	//TODO Composing Renderer and inputManager, handling input
 	input *InputManager
+	subscribers map[Key][]func(state KeyState)
 }
 
 type Window struct {
@@ -52,6 +53,7 @@ func New() (*Renderer, error) {
 		make([]objects.Drawable, 0),
 		false,
 		nil,
+		make(map[Key][]func(state KeyState)),
 	}
 	r.input = NewInputManager(r)
 	return r, nil
@@ -80,6 +82,10 @@ func (r *Renderer) AddObject(obj objects.Drawable) {
 	r.adjustObjectVertices(obj)
 }
 
+func (r *Renderer) Clear() {
+	r.objects = make([]objects.Drawable, 0)
+}
+
 func (r* Renderer) adjustObjectVertices(obj objects.Drawable) {
 	if casted, ok := obj.(objects.Transformable); ok {
 		log.Println("Got transformable object... Scaling with window size...")
@@ -97,6 +103,7 @@ func (r *Renderer) Terminate() {
 
 //I think creating a window should connect an appropriate callback
 //So this function will be trashed in later refactoring
+
 func (r *Renderer) ConnectCallbacks() {
 	r.window.SetFramebufferSizeCallback(r.frameBufferSizeCallback())
 }
@@ -108,6 +115,15 @@ func (r *Renderer) Draw() {
 
 	r.window.SwapBuffers()
 	glfw.PollEvents()
+}
+
+func (r *Renderer) SubscribeKey(key Key, function func(state KeyState)) {
+	val, ok := r.subscribers[key]
+	if !ok {
+		r.subscribers[key] = make([]func(state KeyState), 0)
+		val = r.subscribers[key]
+	}
+	r.subscribers[key] = append(val, function)
 }
 
 func (r *Renderer) processInput() {
@@ -123,6 +139,11 @@ func (r *Renderer) processInput() {
 			gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 		}
 		r.polygonMode = !r.polygonMode
+	}
+	for key, subscribers := range r.subscribers {
+		for _, sub := range subscribers {
+			sub(r.input.GetKey(key))
+		}
 	}
 }
 
