@@ -16,6 +16,11 @@ type Transformable interface {
 	Rotate(arc, x, y, z float32)
 	Scale(x, y, z float32)
 
+	SetPosition(x, y, z float32)
+	SetRotation(arc, x, y, z float32)
+	SetScale(x, y, z float32)
+
+
 	GetPosition() (x, y, z float32)
 	GetRotation() (x, y, z float32)
 	GetScale() (x, y, z float32)

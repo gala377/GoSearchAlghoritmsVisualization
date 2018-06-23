@@ -93,7 +93,6 @@ func (r *RawObject) bindBuffers() {
 // RawObject interface
 //
 
-
 func (r *RawObject) SetShader(path string) (err error) {
 	r.shader, err = MetaObjects.GetShader(path)
 	return err
@@ -106,7 +105,7 @@ func (r *RawObject) CompileShaders(frag, vert string) (err error) {
 }
 
 //
-// Drawable impl
+// Drawable implementation
 //
 
 func (r *RawObject) Draw() {
@@ -149,6 +148,23 @@ func (r *RawObject) Rotate(arc, x, y, z float32) {
 func (r *RawObject) Scale(x, y, z float32) {
 	r.trans = r.trans.Mul4(glm.Scale3D(x, y, z))
 	r.scale = glm.Vec3{r.scale.X() * x, r.scale.Y() * y, r.scale.Z() * z}
+}
+
+// todo fix setting and implement the rest
+// todo problem is that set function always resets what was done before
+// so in setPosition setRotation chain only setRotation will work as setPosition changes will be cleared
+// it should just clear the rotation by substracting curr rotation
+func (r *RawObject) SetPosition(x, y, z float32) {
+	r.trans = glm.Ident4().Add(glm.Translate3D(x, y, z))
+	r.position = glm.Vec3{x, y, z}
+}
+
+func (r *RawObject) SetRotation(arc, x, y, z float32) {
+	panic("implement me")
+}
+
+func (r *RawObject) SetScale(x, y, z float32) {
+	panic("implement me")
 }
 
 func (r *RawObject) GetPosition() (x, y, z float32) {

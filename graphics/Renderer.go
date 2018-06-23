@@ -1,7 +1,6 @@
 package graphics
 
 import (
-	"fmt"
 	"log"
 	"runtime"
 
@@ -143,7 +142,6 @@ func (r *Renderer) frameBufferSizeCallback() glfw.FramebufferSizeCallback {
 			r.rescaleObjectsVertices(obj, width, height)
 		}
 		r.width, r.height = uint32(width), uint32(height)
-		r.SetWindowTitle(fmt.Sprintf("(%v, %v)", width, height))
 		gl.Viewport(0, 0, int32(width), int32(height))
 	}
 }
@@ -151,12 +149,16 @@ func (r *Renderer) frameBufferSizeCallback() glfw.FramebufferSizeCallback {
 func (r *Renderer) rescaleObjectsVertices(obj objects.Drawable, width, height int) {
 	if casted, ok := obj.(objects.Transformable); ok {
 		log.Println("Got transformable object... Scaling with window size...")
+		//x, y, z := casted.GetPosition()
+		//casted.Translate(-x, -y, -z)
 		casted.Scale(
 			float32(r.width)/float32(width),
 			float32(r.height)/float32(height),
 			1.0 )
+		//casted.Translate(x, y, z)
 	}
 }
+
 
 //
 //	Window interface

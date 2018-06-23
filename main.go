@@ -12,14 +12,17 @@ func main() {
 	}
 	defer renderer.Terminate()
 	renderer.SetWindowTitle("TestWindow!")
-	renderer.SetWindowSize(800, 600)
+	renderer.SetWindowSize(1280, 720)
 	win, err := renderer.GetWindow()
 	renderer.ConnectCallbacks()
 
-	lab := labyrinth.Random(100, 100)
-	board := labyrinth.NewBoard(lab)
-	board.Translate(-3.0, -2.9, 0.0)
-	renderer.AddObject(&board)
+	lab := labyrinth.Random(50, 50)
+	set := labyrinth.DefaultSettings()
+	set.Shift = 20
+	set.SquareSize = 0.5
+	board := labyrinth.NewBoard(lab, set)
+	board.Translate(-2.0, -2.0, 0.0)
+	renderer.AddObject(board)
 
 	if err != nil {
 		panic(err)
