@@ -14,7 +14,6 @@ Well, press "R" to generete a new one.
 # How can I check it?
 
 1. Clone repo to your go workspace under `github.com/gala377/SearchAlghorithms`
-2. As it's in OpenGL you'll need [this](https://github.com/go-gl). At least gl (v4.3-core), glfw 3.2, and glm.
-2.1 For glm it's possible you'll need [this](https://github.com/golang/image).
+2. As it's in OpenGL you'll need [this](https://github.com/go-gl). At least gl (v4.3-core), glfw 3.2, and glm. For glm it's possible you'll need [this](https://github.com/golang/image).
 3. `go build`
 4. Have fun.
