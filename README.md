@@ -1,15 +1,15 @@
 # GoSearchAlghoritmsVisualization
 Simple visualization of search alghoritms written in OpenGL
 
+Press "s" to start and "r" to generate a new labyrinth. 
+
+Oh... and "w" for wireframe if that's what you like.
+
 # What alghoritms 
 For now it's A*, BFS and DFS.
 
 Mind that A* implementation is actually not an A* and it's not working (yeah, sorry).
 I'll correct that in the future, I promise.
-
-# My Labyrinth is boring.
-
-Well, press "R" to generete a new one.
 
 # How can I check it?
 
